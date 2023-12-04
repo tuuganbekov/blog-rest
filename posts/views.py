@@ -1,5 +1,4 @@
-import json
-from rest_framework import views, response, status
+from rest_framework import views, response, status, generics
 
 from .models import Post
 from .serializers import PostSerializer, PostModelSerializer
@@ -8,7 +7,7 @@ from .serializers import PostSerializer, PostModelSerializer
 class PostAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         posts = Post.objects.all()
-        serializer = PostModelSerializer(posts, many=True)
+        serializer = PostSerializer(posts, many=True)
         return response.Response(
             serializer.data,
             status=status.HTTP_200_OK
@@ -24,7 +23,7 @@ class PostAPIView(views.APIView):
         )
     
 
-class PostDetailAPIView(views.APIView):
+class PostDetailView(views.APIView):
     def get(self, request, pk):
         try:
             post = Post.objects.get(id=pk)
@@ -68,3 +67,23 @@ class PostDetailAPIView(views.APIView):
                 {"message": "Post does not exists"},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+class PostListAPIView(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostModelSerializer
+
+
+class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostModelSerializer
+
+
+class PostUpdateAPIView(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostModelSerializer
+
+
+class PostDeleteAPIView(generics.DestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostModelSerializer

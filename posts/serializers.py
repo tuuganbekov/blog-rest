@@ -14,6 +14,7 @@ class PostSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=255)
     body = serializers.CharField()
+    created_at = serializers.DateTimeField("%d-%m-%Y")
 
     def create(self, validated_data):
         print("validated data:", validated_data)
@@ -27,6 +28,7 @@ class PostSerializer(serializers.Serializer):
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        print(type(representation["created_at"]))
         # representation["title"] = f"Title: {representation['title'].upper()}"
         # representation["new_field"] = "this is new field"
         return representation
